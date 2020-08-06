@@ -1,2 +1,2 @@
 # Vue.js samples
-Let's learn Vue.js!
+Vue.js intro
