@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<title>Product App</title>
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="nav-bar"></div>
+
+	<div id="app">
+		<div class="product">
+
+			<div class="product-image">
+				<img :src="image">
+			</div>
+
+			<div class="product-info">
+				<h1>{{ product }}</h1>
+				<p v-if="inStock">In Stock</p>
+
+				<!-- Didn't know you put the '=' sign in front of class -->
+				<p v-else :class="{ notInStock: !inStock }">Out of Stock</p>
+
+				<ul>
+					<li v-for="detail in details"> {{ detail }} </li>
+				</ul>
+
+				<div v-for="variant in variants" 
+					:key="variant.variantId"
+					class="color-box"
+					:style="{ backgroundColor: variant.variantColor }"
+					@mouseover="UpdateProduct(variant.variantImage)">
+
+				</div>
+
+				<!-- <button v-on:click="cart+=1">Add to cart</button> -->
+
+				<!-- Adding a method on click -->
+				<button v-on:click="AddToCart" 
+						:disabled="!inStock"
+						:class="{ disabledButton: !inStock }">Add to cart</button>
+
+				<div class="cart">
+					<p>Cart({{ cart }})</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="main.js"></script>
+</body>
+</html>
