@@ -1,3 +1,5 @@
+//Add a new boolean data property `onSale` and create a computed property that takes `brand`, `product` and `onSale` and prints out a string whenever `onSale` is true.
+
 var app = new Vue({
 
 	el: '#app',
@@ -13,13 +15,13 @@ var app = new Vue({
 			{
 				variantId: 2234,
 				variantColor: "green",
-				variantImage: './assets/vmSocks-green-onWhite.jpg',
+				variantImage: 'https://www.vuemastery.com/images/challenges/vmSocks-green-onWhite.jpg',
 				variantQuantity: 10
 			},
 			{
 				variantId: 2235,
 				variantColor: "blue",
-				variantImage: './assets/bluesocks.png',
+				variantImage: 'https://www.vuemastery.com/images/challenges/vmSocks-blue-onWhite.jpg',
 				variantQuantity: 0
 			}
 		],
@@ -53,7 +55,7 @@ var app = new Vue({
 		},
 
 		// challenge
-		
+
 		sale() {
           if (this.onSale) {
             return this.brand + ' ' + this.product + ' are on sale!'
