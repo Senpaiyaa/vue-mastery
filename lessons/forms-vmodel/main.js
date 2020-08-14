@@ -4,6 +4,122 @@
  * Vue.component('name', {options})
  */
 
+Vue.component('product', {
+	props: {
+		premium: {
+			type: Boolean,
+			required: true
+		}
+	},
+	template: `
+		<div class="product">
+
+			<div class="product-image">
+				<img :src="image">
+			</div>
+
+			<div class="product-info">
+				<h1> {{ title }} </h1>
+				<p v-if="inStock">In Stock</p>
+				<p v-else>Out of Stock</p>
+				<p>Shipping: {{ shipping }}</p>
+
+				<ul>
+					<li v-for="detail in details"> {{ detail }} </li>
+				</ul>
+
+				<div v-for="(variant, index) in variants" 
+					:key="variant.variantId"
+					class="color-box"
+					:style="{ backgroundColor: variant.variantColor }"
+					@mouseover="UpdateProduct(index)">
+
+				</div>
+
+				<!-- Adding a method on click -->
+				<button v-on:click="AddToCart" 
+					:disabled="!inStock"
+					:class="{ disabledButton: !inStock }">Add to cart</button>
+
+				<div>
+					<h2>Reviews</h2>
+					<p v-if="!reviews.length">There are no reviews yet.</p>
+					<ul>
+						<li v-for="review in reviews">
+							<p>{{ review.name }}</p>
+							<p>{{ review.review }} </p>
+							<p>Rating: {{ review.rating }} </p>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+			<product-review @review-submitted="AddReview"></product-review>
+		</div>
+
+	`,
+
+	data() {
+		return 	{
+			brand: 'Vue mastery',
+			product: 'Socks',
+			selectedVariant: 0,
+			details: ['80% cotton', '20% polyster', 'Gender-neutral'],
+			variants: [
+				{
+					variantId: 2234,
+					variantColor: "green",
+					variantImage: 'https://www.vuemastery.com/images/challenges/vmSocks-green-onWhite.jpg',
+					variantQuantity: 10
+				},
+				{
+					variantId: 2235,
+					variantColor: "blue",
+					variantImage: 'https://www.vuemastery.com/images/challenges/vmSocks-blue-onWhite.jpg',
+					variantQuantity: 0
+				}
+			],
+			reviews: []
+		}
+	},
+
+	// methods properties
+
+	methods: {
+		AddToCart: function() {
+			this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId)
+		},
+		UpdateProduct: function(index) {
+			this.selectedVariant = index
+			console.log(index)
+		},
+		AddReview: function(productReview) {
+			this.reviews.push(productReview) 
+		}
+	},
+
+	// computed properties
+
+	computed: {
+		title() {
+			return this.brand + ' ' + this.product
+		},
+		image() {
+			return this.variants[this.selectedVariant].variantImage
+		},
+		inStock() {
+			return this.variants[this.selectedVariant].variantQuantity
+		},
+		shipping() {
+			if (this.premium) {
+				return "Free"
+			}
+			return 2.99
+		}
+	}
+
+})
+
 Vue.component('product-review', {
 	template: `
 	    <form class="review-form" @submit.prevent="onSubmit">
@@ -72,124 +188,6 @@ Vue.component('product-review', {
 
 		}
 	}
-})
-
-Vue.component('product', {
-	props: {
-		premium: {
-			type: Boolean,
-			required: true
-		}
-	},
-	template: `
-		<div class="product">
-
-			<div class="product-image">
-				<img :src="image">
-			</div>
-
-			<div class="product-info">
-				<h1> {{ title }} </h1>
-				<p v-if="inStock">In Stock</p>
-				<p v-else>Out of Stock</p>
-				<p>Shipping: {{ shipping }}</p>
-
-				<ul>
-					<li v-for="detail in details"> {{ detail }} </li>
-				</ul>
-
-				<div v-for="(variant, index) in variants" 
-					:key="variant.variantId"
-					class="color-box"
-					:style="{ backgroundColor: variant.variantColor }"
-					@mouseover="UpdateProduct(index)">
-
-				</div>
-
-				<!-- Adding a method on click -->
-				<button v-on:click="AddToCart" 
-						:disabled="!inStock"
-						:class="{ disabledButton: !inStock }">Add to cart</button>
-
-				<div>
-					<h2>Reviews</h2>
-					<p v-if="!reviews.length">There are no reviews yet.</p>
-					<ul>
-						<li v-for="review in reviews">
-							<p>Name{{ review.name }}</p>
-							<p>Review: {{ review.review }} </p>
-							<p>Rating: {{ review.rating }} </p>
-						</li>
-					</ul>
-				</div>
-
-			</div>
-			<product-review @review-submitted="AddReview"></product-review>
-		</div>
-
-	`,
-
-	data() {
-		return 	{
-			brand: 'Vue mastery',
-			product: 'Socks',
-			selectedVariant: 0,
-			details: ['80% cotton', '20% polyster', 'Gender-neutral'],
-			variants: [
-				{
-					variantId: 2234,
-					variantColor: "green",
-					variantImage: 'https://www.vuemastery.com/images/challenges/vmSocks-green-onWhite.jpg',
-					variantQuantity: 10
-				},
-				{
-					variantId: 2235,
-					variantColor: "blue",
-					variantImage: 'https://www.vuemastery.com/images/challenges/vmSocks-blue-onWhite.jpg',
-					variantQuantity: 0
-				}
-			],
-			reviews: []
-		}
-	},
-
-	// methods properties
-
-	methods: {
-		AddToCart: function() {
-			this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId)
-		},
-		UpdateProduct: function(index) {
-			this.selectedVariant = index
-			console.log(index)
-		},
-		AddReview: function(productReview) {
-			this.reviews.push[productReview] 
-
-			console.log(productReview) // somethings wrong with the reviews array after submitting data
-		}
-	},
-
-	// computed properties
-
-	computed: {
-		title() {
-			return this.brand + ' ' + this.product
-		},
-		image() {
-			return this.variants[this.selectedVariant].variantImage
-		},
-		inStock() {
-			return this.variants[this.selectedVariant].variantQuantity
-		},
-		shipping() {
-			if (this.premium) {
-				return "Free"
-			}
-			return 2.99
-		}
-	}
-
 })
 
 var app = new Vue({
