@@ -4,6 +4,8 @@
  * Vue.component('name', {options})
  */
 
+ //Add a question to the form: “Would you recommend this product”. Then take in that response from the user via radio buttons of “yes” or “no” and add it to the productReview object, with form validation.
+
 Vue.component('product', {
 	props: {
 		premium: {
@@ -46,9 +48,10 @@ Vue.component('product', {
 					<p v-if="!reviews.length">There are no reviews yet.</p>
 					<ul>
 						<li v-for="review in reviews">
-							<p>{{ review.name }}</p>
-							<p>{{ review.review }} </p>
+							<p>Customer: {{ review.name }}</p>
+							<p>Comment: {{ review.review }} </p>
 							<p>Rating: {{ review.rating }} </p>
+							<p>Is recommend: {{ review.picked }} </p>
 						</li>
 					</ul>
 				</div>
@@ -151,7 +154,13 @@ Vue.component('product-review', {
 	          <option>1</option>
 	        </select>
 	      </p>
-	          
+			<p>Would you recommend this product? </p>
+			<input type="radio" id="yes" value="Yes" v-model="picked">
+			<label for="yes">Yes</label>
+			<br>
+			<input type="radio" id="no" value="No" v-model="picked">
+			<label for="no">No</label>
+			<br>
 	      <p>
 	        <input type="submit" value="Submit">  
 	      </p>    
@@ -163,26 +172,30 @@ Vue.component('product-review', {
 			name: null,
 			review: null,
 			rating: null,
+			picked: null,
 			errors: []
 		}
 	},
 	methods: {
 		onSubmit() {
-			if (this.name && this.review && this.rating) {
+			if (this.name && this.review && this.rating && this.picked) {
 				let productReview = {
 					name: this.name,
 					review: this.review,
-					rating: this.rating
+					rating: this.rating,
+					picked: this.picked
 				}
 				this.$emit('review-submitted', productReview)
 				this.name = null
 				this.review = null
 				this.rating = null
+				this.picked = null
 
 			} else {
 				if (!this.name) this.errors.push("Name required.")
 				if (!this.review) this.errors.push("Review required.")
 				if (!this.rating) this.errors.push("Rating required.")
+				if (!this.picked) this.errors.push("Please pick Yes or No.")
 
 			}
 
