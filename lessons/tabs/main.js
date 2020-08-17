@@ -1,7 +1,11 @@
+//Create tabs for “Shipping” and “Details” that display the shipping cost and product details, respectively.
+
 /*
- * Creating a component
- *
- * Vue.component('name', {options})
+ * @var eventBus
+ * 
+ * Main purpose of this global variable 
+ * is to communicate with 'product-review' 
+ * and other components
  */
 
 var eventBus  = new Vue()
@@ -26,11 +30,9 @@ Vue.component('product', {
 				<h1> {{ title }} </h1>
 				<p v-if="inStock">In Stock</p>
 				<p v-else>Out of Stock</p>
-				<p>Shipping: {{ shipping }}</p>
 
-				<ul>
-					<li v-for="detail in details"> {{ detail }} </li>
-				</ul>
+				<information-tab :shipping="shipping" :details="details"></information-tab>
+
 
 				<div v-for="(variant, index) in variants" 
 					:key="variant.variantId"
@@ -130,7 +132,7 @@ Vue.component('product-review', {
 
 	      <p>
 	        <label for="name">Name:</label>
-	        <input id="name" v-model="name" placeholder="name">
+	        <input id="name" v-model="name">
 	      </p>
 	      
 	      <p>
@@ -228,10 +230,49 @@ Vue.component('product-tabs', {
 	}
 })
 
+Vue.component('information-tab', {
+	props: {
+		shipping: {
+			required: true
+
+		},
+		details: {
+			type: Array,
+			required: true
+		}
+	},
+	template: `
+		<div>
+			<span class="tab" 
+				  v-for="(tab, index) in tabs" :key="index"
+				  @click="selectedTab = tab"
+				  :class="{ activeTab: selectedTab === tab }">{{ tab }}</span>
+
+			<div v-show="selectedTab === 'Shipping'">
+				<p>{{ shipping }}</p>
+			</div>
+
+			<div v-show="selectedTab === 'Details'">
+				<ul>
+					<li v-for="detail in details"> {{ detail }} </li>
+				</ul>
+
+			</div>
+
+		</div>
+	`,
+	data() {
+		return {
+			tabs: ['Shipping', 'Details'],
+			selectedTab: 'Shipping'
+		}
+	}
+})
+
 var app = new Vue({
 	el: '#app',
 	data: {
-		premium: false,
+		premium: true,
 		cart: []
 
 	},
